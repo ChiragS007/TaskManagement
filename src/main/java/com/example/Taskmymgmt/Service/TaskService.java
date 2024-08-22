@@ -50,4 +50,16 @@ public class TaskService {
 
         return savedTask;
     }
+
+    public void updateTaskFields(TaskEntity existingTask, TaskEntity taskUpdate) {
+        if (taskUpdate.getTitle() != null) {
+            existingTask.setTitle(taskUpdate.getTitle());
+        }
+        if (taskUpdate.getDescription() != null) {
+            existingTask.setDescription(taskUpdate.getDescription());
+        }
+        if (taskUpdate.getRemarks() != null) {
+            existingTask.setRemarks(taskUpdate.getRemarks());
+        }
+    }
 }

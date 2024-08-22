@@ -1,5 +1,6 @@
 package com.example.Taskmymgmt.Controller;
 
+import com.example.Taskmymgmt.Config.JwtService;
 import com.example.Taskmymgmt.Entity.TaskEntity;
 import com.example.Taskmymgmt.Entity.UserEntity;
 import com.example.Taskmymgmt.Repository.TaskRepository;
@@ -29,10 +30,18 @@ public class ManagerController {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
+    private JwtService jwtService;
+
     @GetMapping("/get_tasks")
     @PreAuthorize("hasRole('MANAGER')")
     @Transactional
-    public ResponseEntity<List<TaskEntity>> getManagerTasks(@RequestHeader("managerUsername") String managerUsername) {
+    public ResponseEntity<List<TaskEntity>> getManagerTasks(@RequestHeader("Authorization") String authHeader) {
+
+        String jwt = authHeader.substring(7);
+
+        String managerUsername = jwtService.extractUsername(jwt);
+
         Optional<UserEntity> managerOptional = userService.findByUsername(managerUsername);
 
         if (managerOptional.isPresent()) {
@@ -84,7 +93,12 @@ public class ManagerController {
     @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<String> reviewTask(@PathVariable("task_id") ObjectId taskId,
                                              @PathVariable("review_status") String reviewStatus,
-                                             @RequestHeader("managerUsername") String managerUsername) {
+                                             @RequestHeader("Authorization") String authHeader) {
+
+        String jwt = authHeader.substring(7);
+
+        String managerUsername = jwtService.extractUsername(jwt);
+
         Optional<TaskEntity> taskOptional = taskService.findTaskById(taskId);
 
         if (taskOptional.isPresent()) {

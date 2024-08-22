@@ -88,7 +88,7 @@ public class TaskEntity {
     }
 
 
-    public void setFieldsFromUpdate(TaskEntity taskUpdate) {
-
-    }
+//    public void setFieldsFromUpdate(TaskEntity taskUpdate) {
+//
+//    }
 }

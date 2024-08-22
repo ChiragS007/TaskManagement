@@ -1,5 +1,6 @@
 package com.example.Taskmymgmt.Controller;
 
+import com.example.Taskmymgmt.Config.JwtService;
 import com.example.Taskmymgmt.Entity.TaskEntity;
 import com.example.Taskmymgmt.Entity.UserEntity;
 import com.example.Taskmymgmt.Service.TaskService;
@@ -27,10 +28,18 @@ public class EmployeeController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtService jwtService;
+
     // 1. Get all tasks from the task_list of the employee
     @GetMapping("/tasks")
     @PreAuthorize("hasRole('EMPLOYEE')")
-    public ResponseEntity<List<TaskEntity>> getEmployeeTasks(@RequestHeader("employeeUsername") String employeeUsername) {
+    public ResponseEntity<List<TaskEntity>> getEmployeeTasks(@RequestHeader("Authorization") String authHeader) {
+
+        String jwt = authHeader.substring(7);
+
+        String employeeUsername = jwtService.extractUsername(jwt);
+
         Optional<UserEntity> employeeOptional = userService.findByUsername(employeeUsername);
 
         if (employeeOptional.isPresent()) {
@@ -51,7 +60,11 @@ public class EmployeeController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<String> performTask(@PathVariable("task_id") ObjectId taskId,
                                               @RequestBody TaskEntity taskUpdate,
-                                              @RequestHeader("employeeUsername") String employeeUsername) {
+                                              @RequestHeader("Authorization") String authHeader) {
+
+        String jwt = authHeader.substring(7);
+
+        String employeeUsername = jwtService.extractUsername(jwt);
 
         Optional<TaskEntity> taskOptional = taskService.findTaskById(taskId);
         if (taskOptional.isPresent()) {
@@ -63,7 +76,7 @@ public class EmployeeController {
             }
 
             // Update task fields
-            task.setFieldsFromUpdate(taskUpdate);
+            taskService.updateTaskFields(task, taskUpdate);
             task.setStatus("In Progress");
             taskService.saveTask(task);
 
@@ -76,7 +89,11 @@ public class EmployeeController {
     @PutMapping("/mark_review/{task_id}")
     @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<String> markTaskForReview(@PathVariable("task_id") ObjectId taskId,
-                                                    @RequestHeader("employeeUsername") String employeeUsername) {
+                                                    @RequestHeader("Authorization") String authHeader) {
+
+        String jwt = authHeader.substring(7);
+
+        String employeeUsername = jwtService.extractUsername(jwt);
 
         Optional<TaskEntity> taskOptional = taskService.findTaskById(taskId);
         if (taskOptional.isPresent()) {

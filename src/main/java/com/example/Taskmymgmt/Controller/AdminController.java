@@ -95,7 +95,11 @@ public class AdminController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> reviewTask(@PathVariable("task_id") ObjectId taskId,
                                             @PathVariable("status") String status,
-                                            @RequestHeader("adminUsername") String adminUsername) {
+                                             @RequestHeader("Authorization") String authHeader) {
+
+        String jwt = authHeader.substring(7);
+
+        String adminUsername = jwtService.extractUsername(jwt);
         // Fetch the task by ID
         Optional<TaskEntity> taskOptional = taskService.findTaskById(taskId);
 
