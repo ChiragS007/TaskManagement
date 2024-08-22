@@ -68,12 +68,22 @@ public class UserService {
         return false;
     }
 
+    public boolean setRoleToAdmin(String username) {
+        Optional<UserEntity> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+            user.setRoles(UserEntity.ERole.ADMIN); // Assuming "MANAGER" is a predefined role
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
     public Optional<UserEntity> findUserWithTaskInList(ObjectId taskId, UserEntity.ERole role) {
         return userRepository.findAllByRoles(role).stream()
                 .filter(user -> user.getTask_list().stream()
                         .anyMatch(taskRef -> taskRef.getId().equals(taskId)))
                 .findFirst();
     }
-
 
 }

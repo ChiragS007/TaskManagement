@@ -91,6 +91,17 @@ public class AdminController {
         }
     }
 
+    @PutMapping("/set_admin/{assigneeUsername}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> setAdminRole(@PathVariable("assigneeUsername") String assigneeUsername) {
+        boolean isRoleUpdated = userService.setRoleToAdmin(assigneeUsername);
+        if (isRoleUpdated) {
+            return ResponseEntity.ok("User role updated to Admin for: " + assigneeUsername);
+        } else {
+            return ResponseEntity.badRequest().body("Failed to update role for: " + assigneeUsername);
+        }
+    }
+
     @PutMapping("/review_task/{task_id}/{status}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> reviewTask(@PathVariable("task_id") ObjectId taskId,

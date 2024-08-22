@@ -17,19 +17,6 @@ public class RegisterRequest {
 
     private String password;
 
-    public String getrequestUsername() {
-        return username;
-    }
+    private String roles;
 
-    public void setrequestUsername(String username) {
-        this.username = username;
-    }
-
-    public String getrequestPassword() {
-        return password;
-    }
-
-    public void setrequestPassword(String password) {
-        this.password = password;
-    }
 }

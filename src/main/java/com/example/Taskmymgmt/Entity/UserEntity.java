@@ -36,6 +36,7 @@ public class UserEntity implements UserDetails {
     private ERole roles;
 
     public enum ERole {
+        DEFAULT,
         ADMIN,
         MANAGER,
         EMPLOYEE
